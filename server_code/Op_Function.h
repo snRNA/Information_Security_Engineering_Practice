@@ -10,14 +10,14 @@
 // 参数:cmd表示要执行的命令
 // result是执行的结果存储的字符串数组
 // 函数执行成功返回1，失败返回0  
-bool execmd(char* ret) {
-	char* cmd ="dir";
-	char buffer[128];                         //定义缓冲区                        
+bool execmd(char *str,char* ret) {
+	char* cmd =str;
+	char buffer[500];                         //定义缓冲区                        
 	FILE* pipe = _popen(cmd, "r");            //打开管道，并执行命令 
 	if (!pipe) return 0;                      //返回0表示运行失败 
 
 	while (!feof(pipe)) {
-		if (fgets(buffer, 128, pipe)) {             //将管道输出到result中 
+		if (fgets(buffer, 500, pipe)) {             //将管道输出到result中 
 			strcat(ret, buffer);
 		}
 	}

