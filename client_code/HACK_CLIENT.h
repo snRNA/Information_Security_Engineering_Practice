@@ -9,7 +9,7 @@
 
 #define BUTTON_WIDTH    (SCREEN_WIDTH/8)		//窗口控制按钮宽
 #define BUTTON_HEIGHT   (SCREEN_HEIGHT/12)      //窗口控制按钮高
-#define BUTTON_DISTANCE  BUTTON_HEIGHT			//窗口控制按钮纵间隔=窗口控制按钮高+窗口控制按钮间隔
+#define BUTTON_DISTANCE  (BUTTON_HEIGHT/2)			//窗口控制按钮纵间隔=窗口控制按钮高+窗口控制按钮间隔
 #define BUTTON_X		(SCREEN_WIDTH/10)       //窗口控制最左上按钮与y轴间距
 #define BUTTON_Y		(SCREEN_HEIGHT/10)      //窗口控制最左上按钮与x轴间距
 
@@ -29,7 +29,7 @@
 #define BUTTON_SHELL_LS		  7  //远程桌面开启/关闭按钮编号
 #define BUTTON_SHELL_MKDIR    8  //远程桌面开启/关闭按钮编号
 #define BUTTON_SHELL_RMDIR    9  //远程桌面开启/关闭按钮编号
-#define BUTTON_SHELL_RM		 10  //远程桌面开启/关闭按钮编号
+#define BUTTON_SHELL_INPUT_2		 10  //远程桌面开启/关闭按钮编号
 
 
 #define SHELL_WIDTH (SCREEN_WIDTH/2)						//SHELL窗口控制按钮宽

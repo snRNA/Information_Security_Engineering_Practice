@@ -55,7 +55,7 @@ int WINAPI WinMain(HINSTANCE hinstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,i
 	HWND hMainWnd;
 	hMainWnd=CreateWindow( 
 		"WndClass",                                                      //窗口类名
-		"龙魔之战4.5 HACK CLIENT",                                       //窗口标题名
+		"哔哩哔哩(゜-゜)つロ 干杯~-bilibili ",                                       //窗口标题名
 		WS_OVERLAPPEDWINDOW,                                             //窗口风格
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,

